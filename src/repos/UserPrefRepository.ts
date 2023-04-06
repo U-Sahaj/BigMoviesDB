@@ -16,8 +16,6 @@ export class UserPrefRepository {
     const projection = { _id: 0, [userId]: 1 };
     const result = await this.userPrefsCollection.findOne(query, { projection });
     if (result) {
-      console.log(`UserPrefRepository: `, result[userId])
-
       return { user_id: userId, ...result[userId] };
     }
     return null;
