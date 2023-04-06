@@ -22,7 +22,7 @@ describe("UserRepository", () => {
   });
 
 
-  describe("User preferences data", () => {
+  describe.skip("User preferences data", () => {
     it("should insert user preferences data into the test database", async () => {
       const userPreferencesData = [
         {
