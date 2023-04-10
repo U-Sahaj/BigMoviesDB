@@ -1,5 +1,5 @@
 import { UserPreferences } from "../valueobjects/UserPreferences";
 
-export interface UserPrefRepository {
-  getUserPrefs(userId: string): UserPreferences | null;
+export interface IUserPrefRepository {
+  getUserPreferences(userId: string): UserPreferences | undefined
 }

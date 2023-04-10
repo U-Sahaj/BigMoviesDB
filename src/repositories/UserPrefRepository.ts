@@ -1,6 +1,7 @@
+import { IUserPrefRepository } from "../interfaces/IUserPrefRepository";
 import { UserPreferences } from "../valueobjects/UserPreferences";
 
-export class UserPrefRepository {
+export class UserPrefRepository implements IUserPrefRepository {
   private readonly _userPrefs: UserPreferences[] = [];
 
   private static instance: UserPrefRepository;

@@ -1,7 +1,8 @@
+import { IMovieRepository } from "../interfaces/IMovieRepository";
 import { Movie } from "../valueobjects/Movie";
 import { UserPreferences } from "../valueobjects/UserPreferences";
 
-export class MovieRepository {
+export class MovieRepository implements IMovieRepository {
   private readonly _movies: Movie[];
 
   private static instance: MovieRepository;
