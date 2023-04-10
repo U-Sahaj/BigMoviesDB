@@ -1,8 +1,8 @@
 export class UserPreferences {
+  private readonly _userId: string;
   private readonly _preferredActors: string[];
   private readonly _preferredDirectors: string[];
   private readonly _preferredLanguages: string[];
-  private readonly _userId: string;
 
   constructor(userId: string, preferredActors: string[], preferredDirectors: string[], preferredLanguages: string[]) {
     this._userId = userId;

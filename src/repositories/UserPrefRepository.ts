@@ -2,12 +2,12 @@ import { IUserPrefRepository } from "../interfaces/IUserPrefRepository";
 import { UserPreferences } from "../valueobjects/UserPreferences";
 
 export class UserPrefRepository implements IUserPrefRepository {
-  private readonly _userPrefs: UserPreferences[] = [];
+  private readonly _userPrefs: Map<string, UserPreferences>;
 
   private static instance: UserPrefRepository;
 
   private constructor(private readonly userPrefs: UserPreferences[]) {
-    this._userPrefs = userPrefs
+    this._userPrefs = new Map(userPrefs.map(userPref => [userPref.userId, userPref]));
   }
 
   static create(userPrefs: UserPreferences[]): UserPrefRepository {
@@ -25,6 +25,6 @@ export class UserPrefRepository implements IUserPrefRepository {
   }
 
   public getUserPreferences(userId: string): UserPreferences | undefined {
-    return this._userPrefs.find((userPrefs) => userPrefs.userId === userId);
+    return this._userPrefs.get(userId);
   }
 }
