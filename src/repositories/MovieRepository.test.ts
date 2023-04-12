@@ -22,9 +22,9 @@ describe.skip("MovieRepository", () => {
   it("should return only movies that match the user preference", () => {
     const userPreference: IUserPreference = {
       userId: "1",
-      favouriteActors: ["Robert De Niro"],
-      favouriteDirectors: ["Francis Ford Coppola"],
-      preferredLanguages: ["English"],
+      favourite_actors: ["Robert De Niro"],
+      favourite_directors: ["Francis Ford Coppola"],
+      preferred_languages: ["English"],
     };
 
     const result = movieRepository.getMoviesMatchingUserPreferences(userPreference, "");
@@ -39,9 +39,9 @@ describe.skip("MovieRepository", () => {
     it("should return only movies that match the user preference and contain the search text", () => {
       const userPref: IUserPreference = {
         userId: "user1",
-        favouriteActors: ["Al Pacino"],
-        favouriteDirectors: ["Francis Ford Coppola"],
-        preferredLanguages: ["English"],
+        favourite_actors: ["Al Pacino"],
+        favourite_directors: ["Francis Ford Coppola"],
+        preferred_languages: ["English"],
       };
 
       const searchText = "Godfather";

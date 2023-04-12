@@ -17,6 +17,7 @@
     "vitest": "^0.29.8"
   },
   "dependencies": {
+    "@typegoose/typegoose": "^11.0.0",
     "iso-639-1": "^2.1.15",
     "mongodb": "^5.2.0",
     "mongoose": "^7.0.3"

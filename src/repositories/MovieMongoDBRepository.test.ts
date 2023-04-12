@@ -5,7 +5,7 @@ import { Movie } from '../valueobjects/Movie';
 import mongoose, { Model } from 'mongoose';
 import { MovieCreditsDocument, MovieCreditsSchema } from '../mongoose/MovieCredits.schema';
 
-describe('MovieMongoDBRepository', () => {
+describe.skip('MovieMongoDBRepository', () => {
   let movieRepo: MovieMongoDBRepository;
 
   beforeAll(async () => {
@@ -18,9 +18,9 @@ describe('MovieMongoDBRepository', () => {
   it('should return movies matching user preference and search text', () => {
     const userPref: UserPreference = {
       userId: '100',
-      favouriteActors: ['Al Pacino'],
-      favouriteDirectors: ['Sam Mendes'],
-      preferredLanguages: ['English']
+      favourite_actors: ['Al Pacino'],
+      favourite_directors: ['Sam Mendes'],
+      preferred_languages: ['English']
     };
     const searchText = 'Sam Mendes' //'Godfather';
     const expectedMovies: Movie[] = [

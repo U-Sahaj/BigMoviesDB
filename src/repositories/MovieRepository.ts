@@ -27,14 +27,14 @@ export class MovieRepository implements IMovieRepository {
   }
 
   public getMoviesMatchingUserPreferences(userPrefs: UserPreference, searchText: string): Movie[] {
-    const preferredActors = userPrefs.favouriteActors;
-    const preferredDirectors = userPrefs.favouriteDirectors;
-    const preferredLanguages = userPrefs.preferredLanguages;
+    const preferredActors = userPrefs.favourite_actors;
+    const preferredDirectors = userPrefs.favourite_directors;
+    const preferredLanguages = userPrefs.preferred_languages;
+    console.log(`MovieRepository: # `,preferredActors,preferredDirectors,preferredLanguages)
 
     const searchTerms = searchText.toLowerCase().split(',');
     // console.log(`getMoviesMatching...: searchTerms `,searchTerms)
     console.log(`MovieRepository: @ `,this._movies.size)
-    console.log(`MovieRepository: % `,preferredLanguages)
     console.log(`MovieRepository: ^ `,this._movies.get('1')!)
 
 
@@ -43,7 +43,7 @@ export class MovieRepository implements IMovieRepository {
       if (!preferredLanguages.includes(ISO6391.getName(movie.originalLanguage))) {
         return false;
       }
-      console.log(`MovieRepository: # `,movie.movieTitle)
+      // console.log(`MovieRepository: # `,movie.movieTitle)
 
       // Check if the movie matches the user's actor or director preferences
       const hasPreferredActor = movie.actors.some((actor) => preferredActors.includes(actor));
@@ -51,7 +51,7 @@ export class MovieRepository implements IMovieRepository {
       if (!hasPreferredActor && !hasPreferredDirector) {
         return false;
       }
-      console.log(`MovieRepository: $ `,movie.movieTitle)
+      // console.log(`MovieRepository: $ `,movie.movieTitle)
 
       // Check if the movie matches the search terms
       for (const term of searchTerms) {
