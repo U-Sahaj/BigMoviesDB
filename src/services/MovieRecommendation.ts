@@ -1,7 +1,7 @@
 import { MovieRepository } from "../repositories/MovieRepository";
 import { UserPrefRepository } from "../repositories/UserPrefRepository";
 import { Movie } from "../valueobjects/Movie";
-import { UserPreferences } from "../valueobjects/UserPreferences";
+import { UserPreferences } from "../valueobjects/UserPreference";
 
 
 export function getMovies(userId: string, searchText: string): string[] {

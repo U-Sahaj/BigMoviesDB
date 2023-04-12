@@ -1,16 +1,17 @@
 import { IUserPrefRepository } from "../interfaces/IUserPrefRepository";
-import { UserPreferences } from "../valueobjects/UserPreferences";
+import { UserPreference } from "../valueobjects/UserPreference";
 
 export class UserPrefRepository implements IUserPrefRepository {
-  private readonly _userPrefs: Map<string, UserPreferences>;
+  private readonly _userPrefs: Map<string, UserPreference>;
 
   private static instance: UserPrefRepository;
 
-  private constructor(private readonly userPrefs: UserPreferences[]) {
+  private constructor(userPrefs: UserPreference[]) {
     this._userPrefs = new Map(userPrefs.map(userPref => [userPref.userId, userPref]));
+    // console.log(`UserPrefRepository: constructor: `,this._userPrefs)
   }
 
-  static create(userPrefs: UserPreferences[]): UserPrefRepository {
+  static create(userPrefs: UserPreference[]): UserPrefRepository {
     if (!UserPrefRepository.instance) {
       UserPrefRepository.instance = new UserPrefRepository(userPrefs);
     }
@@ -24,7 +25,8 @@ export class UserPrefRepository implements IUserPrefRepository {
     return UserPrefRepository.instance;
   }
 
-  public getUserPreferences(userId: string): UserPreferences | undefined {
+  public getUserPreferences(userId: string): UserPreference | undefined {
+    // console.log(`UserPrefRepository: getUserPreferences:`,this._userPrefs)
     return this._userPrefs.get(userId);
   }
 }
