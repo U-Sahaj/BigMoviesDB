@@ -27,7 +27,9 @@ export class UserPrefRepository implements IUserPrefRepository {
   }
 
   public getUserPreferences(userId: string): UserPreference | undefined {
-    console.log(`UserPrefRepository: * `, this._userPrefs.size)
+    console.log(`UserPrefRepository: ! `, userId.length)
+    console.log(`UserPrefRepository: @ `, this._userPrefs.get(userId))
+    
     return this._userPrefs.get(userId);
   }
 }

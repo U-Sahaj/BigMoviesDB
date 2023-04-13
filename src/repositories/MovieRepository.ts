@@ -35,7 +35,7 @@ export class MovieRepository implements IMovieRepository {
     const searchTerms = searchText.toLowerCase().split(',');
     // console.log(`getMoviesMatching...: searchTerms `,searchTerms)
     console.log(`MovieRepository: @ `,this._movies.size)
-    console.log(`MovieRepository: ^ `,this._movies.get('1')!)
+    // console.log(`MovieRepository: ^ `,this._movies.get('1')!)
 
 
     return Array.from(this._movies.values()).filter((movie) => {
@@ -51,7 +51,7 @@ export class MovieRepository implements IMovieRepository {
       if (!hasPreferredActor && !hasPreferredDirector) {
         return false;
       }
-      // console.log(`MovieRepository: $ `,movie.movieTitle)
+      // console.log(`MovieRepository: $ `,searchTerms)
 
       // Check if the movie matches the search terms
       for (const term of searchTerms) {

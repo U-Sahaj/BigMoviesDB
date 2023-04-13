@@ -20,7 +20,12 @@ export function getMoviesFromDB(userId: string, searchText: string): string[] {
   if (!userPrefs) {
     return [];
   }
+  
+  console.log(`MovieRecommendation: @ `, userPrefs)
+
   const movies: Movie[] = MovieMongoDBRepository.getInstance().getMoviesMatchingUserPreferences(userPrefs, searchText);
   const sortedMovies: Movie[] = movies.sort((a: Movie, b: Movie) => a.movieTitle.localeCompare(b.movieTitle));
+  // console.log(`MovieRecommendation: * `, sortedMovies)
+
   return sortedMovies.map((movie: Movie) => movie.movieTitle);
 }

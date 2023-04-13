@@ -3,7 +3,7 @@ import { UserPrefRepository } from './UserPrefRepository';
 import { IUserPreference } from '../interfaces/IUserPreference';
 import { UserPreference } from '../valueobjects/UserPreference';
 
-describe.skip('UserPrefRepository', () => {
+describe('UserPrefRepository', () => {
   let repo: UserPrefRepository;
 
   beforeAll(() => {
@@ -144,7 +144,7 @@ describe.skip('UserPrefRepository', () => {
 
   });
 
-  describe.skip('getUserPreferences()', () => {
+  describe('getUserPreferences()', () => {
     it('should return the user preferences for a valid user ID', () => {
       const userId = '100';
       const userPref = repo.getUserPreferences(userId);

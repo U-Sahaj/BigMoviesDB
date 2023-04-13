@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import MovieRecommendationRouter from './routes';
+import { startServices } from './services';
 
 // Define the Express app
 const app: Application = express();
@@ -13,10 +14,14 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Connect to MongoDB
-mongoose.connect('mongodb://test-mongo:27017/TestingDB')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.log(err));
+// mongoose.connect('mongodb://test-mongo:27017/TestingDB')
+//   .then(() => console.log('Connected to MongoDB'))
+//   .catch((err) => console.log(err));
   
+
+// Start services
+startServices()
+
 // Start the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
