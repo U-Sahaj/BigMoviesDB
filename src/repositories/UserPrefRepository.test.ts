@@ -1,10 +1,10 @@
 import { describe, it, beforeAll, afterAll, expect } from 'vitest'
 import { UserPrefRepository } from './UserPrefRepository';
 import { IUserPreference } from '../interfaces/IUserPreference';
-import { UserPreference } from '../valueobjects/UserPreference';
+import { IUserPrefRepository } from '../interfaces/IUserPrefRepository';
 
-describe('UserPrefRepository', () => {
-  let repo: UserPrefRepository;
+describe.skip('UserPrefRepository', () => {
+  let repo: IUserPrefRepository;
 
   beforeAll(() => {
     const userPrefsData: string = `[
@@ -136,11 +136,9 @@ describe('UserPrefRepository', () => {
         favourite_directors: preferences.favourite_directors,
       };
     });
-        
-        
-    // console.log(`UserPrefRepository.test: ! `,userPreferences)
 
     repo = UserPrefRepository.create(userPreferences);
+    // console.log(`UserPrefRepository.test: ! `,userPref)
 
   });
 

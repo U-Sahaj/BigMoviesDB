@@ -1,6 +1,8 @@
-import { Movie } from "../valueobjects/Movie";
 import { UserPreference } from "../valueobjects/UserPreference";
+import { IMovie } from "./IMovie";
 
 export interface IMovieRepository {
-  getMoviesMatchingUserPreferences(userPrefs: UserPreference, searchText: string): Movie[];
+  // getMovie(movieId: string): IMovie;
+  save(review: IMovie): void;
+  getMoviesMatchingUserPreferences(userPrefs: UserPreference, searchText: string): IMovie[];
 }

@@ -1,3 +1,4 @@
+import { IMovie } from "../interfaces/IMovie";
 import { IMovieRepository } from "../interfaces/IMovieRepository";
 import { Movie } from "../valueobjects/Movie";
 import { UserPreference } from "../valueobjects/UserPreference";
@@ -16,6 +17,7 @@ export class MovieRepository implements IMovieRepository {
     if (!MovieRepository.instance) {
       MovieRepository.instance = new MovieRepository(movies);
     }
+
     return MovieRepository.instance;
   }
 
@@ -30,11 +32,11 @@ export class MovieRepository implements IMovieRepository {
     const preferredActors = userPrefs.favourite_actors;
     const preferredDirectors = userPrefs.favourite_directors;
     const preferredLanguages = userPrefs.preferred_languages;
-    console.log(`MovieRepository: # `,preferredActors,preferredDirectors,preferredLanguages)
+    // console.log(`MovieRepository: # `,preferredActors,preferredDirectors,preferredLanguages)
 
     const searchTerms = searchText.toLowerCase().split(',');
     // console.log(`getMoviesMatching...: searchTerms `,searchTerms)
-    console.log(`MovieRepository: @ `,this._movies.size)
+    // console.log(`MovieRepository: @ `,this._movies.size)
     // console.log(`MovieRepository: ^ `,this._movies.get('1')!)
 
 
@@ -64,6 +66,13 @@ export class MovieRepository implements IMovieRepository {
   
       return true;
     });
-  
   }
+
+  save(movie: IMovie): void {
+    this._movies.set(movie.id, movie);
+    console.log(`MovieRepository: ! `,MovieRepository.instance._movies)
+
+  }
+
+
 }
