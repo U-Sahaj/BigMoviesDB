@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 import { ISimilarityScore } from "../interfaces/ISimilarityScore";
 
 export const similarityScoreSchema = new Schema<ISimilarityScore>({
@@ -6,3 +6,7 @@ export const similarityScoreSchema = new Schema<ISimilarityScore>({
   userId: { type: String, required: true },
   score: { type: Number, required: true },
 });
+
+export interface SimilarityScoreDocument extends ISimilarityScore, Document {};
+
+export const SimilarityScoreModel = model<SimilarityScoreDocument>('SimilarityScore', similarityScoreSchema);

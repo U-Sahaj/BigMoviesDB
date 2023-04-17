@@ -56,8 +56,8 @@ export class MovieReviewByUserAggregate {
 
   }
 
-  getMovieReviews(): IMovieReview[] {
-    return this.movieReviews;
+  getMovieReviewsByUser(userId: string): IMovieReview[] {
+    return this.movieReviews.filter((review) => review.userId === userId);
   }
 }
 

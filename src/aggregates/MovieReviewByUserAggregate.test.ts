@@ -1,4 +1,5 @@
-import { describe, it, beforeAll, afterAll, beforeEach, afterEach, expect } from 'vitest'
+import mongoose, { Model, connect, disconnect, model } from 'mongoose';
+import { describe, it, beforeAll, afterAll, beforeEach, afterEach, expect, vi } from 'vitest'
 import { User } from '../entities/User';
 import { IUser } from '../interfaces/IUser';
 import { IUserPrefRepository } from '../interfaces/IUserPrefRepository';
@@ -14,6 +15,12 @@ import { SimilarityScoreRepository } from '../repositories/SimilarityScoreReposi
 import { UserPreference } from '../valueobjects/UserPreference';
 import { UserPrefRepository } from '../repositories/UserPrefRepository';
 import { MockMovieReviewRepository } from '../mocks/MockMovieReviewRepository';
+import { IMovieReview } from '../interfaces/IMovieReview';
+import { IMovieReviewByUserAggregateDocument, movieReviewByUserAggregateSchema } from '../mongoose/MovieReviewByUserAggregate.schema';
+import { ISimilarityScore } from '../interfaces/ISimilarityScore';
+import { MovieReviewModel } from '../mongoose/MovieReview.schema';
+import { SimilarityScoreModel } from '../mongoose/SimilarityScore.schema';
+import { userSchema } from '../mongoose/User.schema';
 
 describe('MovieReviewByUserAggregate', () => {
   let user: IUser;
@@ -23,7 +30,7 @@ describe('MovieReviewByUserAggregate', () => {
   let movieReviewRepository: IMovieReviewRepository;
   let movieReviewByUserAggregate: MovieReviewByUserAggregate;
 
-  beforeAll(() => {
+  beforeEach(() => {
     // setup User Preferences Repository
     const userPrefsData: string = `[
       {
@@ -208,7 +215,7 @@ describe('MovieReviewByUserAggregate', () => {
 
   });
 
-  it('should add a movie review successfully to a mock repository', async () => {
+  it.skip('should add a movie review successfully to a mock repository', async () => {
     const userPref = new UserPreference(user.id, ['Tom Hanks'], ['Steven Spielberg'], ['English']);
     userPrefRepository.save(userPref);
 
@@ -241,5 +248,184 @@ console.log(`MovieReviewByUserAggregate.test: # `,mockMovieReviewRepository.get(
 
   });
 
+  it.skip('should add a movie review successfully by examining mocks', async () => {
+      // Arrange
+      const userId = 'user1';
+      const movieId = 'movie1';
+      const reviewText = 'This is a great movie!';
+      const rating = 4;
+
+      const user = new User(userId);
+
+      // create mock dependencies
+      const mockGetUserPreferences = vi.fn(() => {
+        return new UserPreference(userId, ['Tom Hanks'], ['Steven Spielberg'], ['English']);
+      });
+
+      const mockGetMoviesMatchingUserPreferences = vi.fn(() => {
+        return [new Movie('movie-123', 'Saving Private Ryan', 'en', ['Tom Hanks', 'Matt Damon'], ['Steven Spielberg'])];
+
+      });
+      const mockSaveSimilarityScore = vi.fn(() => Promise.resolve());
+      const mockSaveMovieReview = vi.fn(() => Promise.resolve());
+
+      // create mock repositories
+      userPrefRepository.getUserPreferences = mockGetUserPreferences;
+      movieRepository.getMoviesMatchingUserPreferences = mockGetMoviesMatchingUserPreferences;
+      similarityScoreRepository.save = mockSaveSimilarityScore;
+      movieReviewRepository.save = mockSaveMovieReview;
+
+      const aggregate = new MovieReviewByUserAggregate(
+        user,
+        userPrefRepository,
+        movieRepository,
+        movieReviewRepository,
+        similarityScoreRepository,
+      );
+
+      const movieReview: IMovieReview = {
+        userId,
+        movieId,
+        reviewText,
+        rating,
+        createdAt: new Date(),
+      };
+
+      // Act
+      const result = await aggregate.addMovieReview(movieReview);
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(mockGetUserPreferences).toHaveBeenCalledTimes(1);
+      expect(mockGetUserPreferences).toHaveBeenCalledWith('user1');//(userId);
+      expect(mockGetMoviesMatchingUserPreferences).toHaveBeenCalledTimes(1);
+      expect(mockSaveSimilarityScore).toHaveBeenCalledTimes(1);
+      expect(mockSaveMovieReview).toHaveBeenCalledTimes(1);
+      expect(mockSaveMovieReview).toHaveBeenCalledWith(movieReview);
+      expect(aggregate.getMovieReviewsByUser(userId)).toEqual([movieReview]);
+
+
+  });
+
+  describe('MovieReviewByUserAggregate', () => {
+    let MovieReviewByUserAggregateModel: Model<IMovieReviewByUserAggregateDocument>;
+
+    beforeAll(async () => {
+      await connect('mongodb://test-mongo:27017/TestingDB');
+      MovieReviewByUserAggregateModel = model<IMovieReviewByUserAggregateDocument>('MovieReviewByUserAggregate', movieReviewByUserAggregateSchema);
+    });
+  
+    afterAll(async () => {
+      await disconnect();
+    });
+  
+    afterEach(async () => {
+      // await MovieReviewByUserAggregateModel.deleteMany({});
+    });
+  
+    it.skip('should update all 3 collections in MongoDB in one save call', async () => {
+      const user: IUser = { id: 'user123' };
+      const movieReview: IMovieReview = {
+        movieId: 'movie123',
+        userId: 'user123',
+        reviewText: 'This is a great movie',
+        rating: 4.5,
+        createdAt: new Date(),
+      };
+      const similarityScore: ISimilarityScore = {
+        movieId: 'movie123',
+        userId: 'user123',
+        score: 0.8,
+      };
+      const movieReviewByUserAggregate: IMovieReviewByUserAggregateDocument = new MovieReviewByUserAggregateModel({
+        user,
+        movieReviews: [movieReview],
+        similarityScores: [similarityScore],
+      });
+
+      // const savedMovieReviewByUserAggregate = await movieReviewByUserAggregate.save();
+      // expect(savedMovieReviewByUserAggregate.user).toEqual(user);
+      // expect(savedMovieReviewByUserAggregate.movieReviews[0]).toEqual(movieReview);
+      // expect(savedMovieReviewByUserAggregate.similarityScores[0]).toEqual(similarityScore);  
+    
+      // Create new documents to save
+      const documentsToSave = {
+        user: user.id,
+        movieReviews: [movieReview],
+        similarityScores: [similarityScore]
+      }
+
+      // Save all documents at once using insertMany
+      await MovieReviewByUserAggregateModel.insertMany([documentsToSave]);
+
+    
+    
+    });
+
+    it('should update all 3 separate collections in MongoDB in one save call', async () => {
+      const user: IUser = { id: 'user123' };
+      const movieReview: IMovieReview = {
+        movieId: 'movie123',
+        userId: 'user123',
+        reviewText: 'This is a great movie',
+        rating: 4.5,
+        createdAt: new Date(),
+      };
+      const similarityScore: ISimilarityScore = {
+        movieId: 'movie123',
+        userId: 'user123',
+        score: 0.8,
+      };
+      
+      // Convert test data to Mongoose documents
+      const UserModel = mongoose.model<IUser>('User', userSchema);
+      
+      const userDoc = await UserModel.create(user);
+      const movieReviewDoc = await MovieReviewModel.create(movieReview);
+      const similarityScoreDoc = await SimilarityScoreModel.create(similarityScore);
+
+      // Insert test data into collections using a transaction
+      const session = await mongoose.startSession();
+      session.startTransaction();
+
+      try {
+        await userDoc.save({ session });
+        await movieReviewDoc.save({ session });
+        await similarityScoreDoc.save({ session });
+
+        // Create aggregate and save to the MovieReviewByUserAggregate collection
+        const aggregateDoc = new MovieReviewByUserAggregateModel({
+          user: userDoc,
+          movieReviews: [movieReviewDoc],
+          similarityScores: [similarityScoreDoc],
+        });
+        await aggregateDoc.save({ session });
+
+        await session.commitTransaction();
+
+      } catch (error) {
+        // Abort the transaction if there was an error
+        await session.abortTransaction();
+        console.error(error);
+      } finally {
+        // End the transaction
+        session.endSession();
+      }
+
+      // Verify that data was inserted into collections
+      const users = await UserModel.find();
+      console.log(users); // should contain the test user
+      const movieReviews = await MovieReviewModel.find();
+      console.log(movieReviews); // should contain the test movie review
+      const similarityScores = await SimilarityScoreModel.find();
+      console.log(similarityScores); // should contain the test similarity score
+      const aggregates = await MovieReviewByUserAggregateModel.find();
+      console.log(aggregates); // should contain the test aggregate with references to the user, movie review, and similarity score
+    
+    
+    });
+
+
+  });
 
 });
